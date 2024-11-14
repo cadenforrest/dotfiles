@@ -36,6 +36,14 @@ if ! command -v brew &> /dev/null; then
 else 
     echo "Homebrew already installed"
 fi
+
+# Install Rust + Cargo
+if ! command -v cargo &> /dev/null; then
+    curl https://sh.rustup.rs -sSf | sh
+    echo '. "$HOME/.cargo/env"' >> ~/.zshrc
+else
+    echo "Rust and Cargo already installed"
+fi
  
 # Make sure we have homebrew's dependencies
 sudo apt-get install -y build-essential libssl-dev libreadline-dev zlib1g-dev \
@@ -47,8 +55,11 @@ brew install zellij
 # Install ripgrep
 brew install ripgrep
 
-#  Install fzf
+# Install fzf
 brew install fzf
+
+# Install neovim
+brew install neovim
 
 # Install zsh-autosuggestions
 if ! grep -q 'zsh-autosuggestions.zsh' ~/.zshrc; then
@@ -56,6 +67,15 @@ if ! grep -q 'zsh-autosuggestions.zsh' ~/.zshrc; then
     echo 'source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh' >> ~/.zshrc
 else 
     echo "zsh-autosuggestions already installed"
+fi
+
+# Install zsh-vi-mode
+if ! grep -q 'zsh-vi-mode' ~/.zshrc; then
+    git clone https://github.com/jeffreytse/zsh-vi-mode \
+        $ZSH_CUSTOM/plugins/zsh-vi-mode
+    sed -i '/plugins=(git)/a plugins+=(zsh-vi-mode)' ~/.zshrc
+else
+    echo "zsh-vi-mode already installed"
 fi
 
 # Install asdf version manager
@@ -83,5 +103,14 @@ asdf global nodejs latest
 
 # Install rails
 gem install rails
+
+# Install LunarVim - This needs to be towards the bottom because it depends on node 
+if ! command -v lvim &> /dev/null; then
+    export MSGPACK_PUREPYTHON=1
+    LV_BRANCH='release-1.4/neovim-0.9' bash <(curl -s https://raw.githubusercontent.com/LunarVim/LunarVim/release-1.4/neovim-0.9/utils/installer/install.sh)
+    echo 'export PATH=/home/caden/.local/bin:$PATH' >> ~/.zshrc
+else
+    echo "LunarVim already installed"
+fi
 
 echo 'tools installed - you may have to restart your terminal and run `source ~/.zshrc`.'
