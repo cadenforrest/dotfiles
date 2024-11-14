@@ -1,5 +1,24 @@
 #! /bin/bash
 
+# Notice
+echo "This script will install the following tools and configurations:"
+echo "- Oh My Zsh"
+echo "- Homebrew"
+echo "- Essential build tools and libraries"
+echo "- zellij"
+echo "- ripgrep"
+echo "- fzf"
+echo "- zsh-autosuggestions"
+echo "- asdf version manager"
+echo "- Latest versions of Ruby, Python, and Node.js"
+echo
+read -p "Do you want to continue? (y/n): " confirm
+
+if [[ $confirm != [yY] ]]; then
+    echo "Installation aborted."
+    exit 1
+fi
+
 # Install Oh My Zsh
 if [ -n "$(command -v zsh)" ]; then
     echo "Oh My Zsh already installed"
@@ -25,6 +44,20 @@ sudo apt-get install -y build-essential libssl-dev libreadline-dev zlib1g-dev \
 # Install zellij
 brew install zellij 
 
+# Install ripgrep
+brew install ripgrep
+
+#  Install fzf
+brew install fzf
+
+# Install zsh-autosuggestions
+if ! grep -q 'zsh-autosuggestions.zsh' ~/.zshrc; then
+    brew install zsh-autosuggestions
+    echo 'source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh' >> ~/.zshrc
+else 
+    echo "zsh-autosuggestions already installed"
+fi
+
 # Install asdf version manager
 if ! command -v asdf &> /dev/null; then
     brew install asdf
@@ -48,6 +81,7 @@ asdf plugin-add nodejs
 asdf install nodejs latest
 asdf global nodejs latest
 
-source ~/.zshrc
+# Install rails
+gem install rails
 
-echo 'tools installed - you may have to restart your terminal.'
+echo 'tools installed - you may have to restart your terminal and run `source ~/.zshrc`.'
